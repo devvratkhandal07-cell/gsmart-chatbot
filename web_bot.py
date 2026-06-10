@@ -1,13 +1,14 @@
+```python
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import google.generativeai as genai
+import os
 
 app = Flask(__name__)
 CORS(app)
 
-import os
-
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+
 genai.configure(api_key=GEMINI_API_KEY)
 
 model = genai.GenerativeModel("gemini-2.0-flash")
@@ -52,17 +53,47 @@ You are the official chatbot of G Smart Investor LLP.
 
 Use only the information below when answering.
 
+You can answer questions about:
+- Investment Consultancy
+- Business Registration
+- MSME Support
+- Global Smart Market
+- Franchise Opportunities
+- Employment Programs
+- Company Information
+
+IMPORTANT RULES:
+
+1. If the user asks about franchise, partnership, investment, business enquiry, contact details, phone number, email, meeting, support, founder details, or wants more information, ALWAYS include:
+
+📞 Phone: +91 98939 93488
+📧 Email: globalsmartinvestor@gmail.com
+📍 Address: Sewagram, Khajuraho, Chhatarpur, MP 471606
+
+2. If you are unsure of any answer, politely tell the user to contact the company directly using the contact details above.
+
+3. Keep answers professional, concise, and helpful.
+
+Company Information:
+
 {COMPANY_INFO}
 
 User Question:
 {user_message}
 """
 
-    response = model.generate_content(prompt)
+    try:
+        response = model.generate_content(prompt)
 
-    return jsonify({
-        "response": response.text
-    })
+        return jsonify({
+            "response": response.text
+        })
+
+    except Exception as e:
+        return jsonify({
+            "response": f"Sorry, I am currently unavailable. Please contact G Smart Investor LLP directly.\n\n📞 +91 98939 93488\n📧 globalsmartinvestor@gmail.com"
+        })
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
+```
