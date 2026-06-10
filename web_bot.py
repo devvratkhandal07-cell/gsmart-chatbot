@@ -216,9 +216,8 @@ User Question:
         })
 
     except Exception as e:
-        return jsonify({
-            "response": f"Sorry, I am currently unavailable. Please contact G Smart Investor LLP directly.\n\n📞 +91 98939 93488\n📧 globalsmartinvestor@gmail.com"
-        })
-
+    return jsonify({
+        "response": str(e)
+    })
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
