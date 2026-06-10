@@ -216,8 +216,8 @@ User Question:
         })
 
     except Exception as e:
-    return jsonify({
-        "response": str(e)
-    })
+        return jsonify({
+            "response": str(e)
+        })
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
