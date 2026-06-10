@@ -1,16 +1,14 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-import google.generativeai as genai
+from groq import Groq
 import os
 
 app = Flask(__name__)
 CORS(app)
 
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+GROQ_API_KEY = os.getenv("GROQ_API_KEY") 
+client = Groq(api_key=GROQ_API_KEY)
 
-genai.configure(api_key=GEMINI_API_KEY)
-
-model = genai.GenerativeModel("gemini-2.0-flash")
 
 COMPANY_INFO = """
 G Smart Investor LLP
@@ -203,16 +201,20 @@ User Question:
 """
 
     try:
-        response = model.generate_content(
-    prompt,
-    generation_config={
-        "temperature": 0.7,
-        "max_output_tokens": 800
-    }
-)
+        response = client.chat.completions.create(
+            model="llama-3.3-70b-versatile",
+            messages=[
+                {
+                    "role": "user",
+                    "content": prompt
+                }
+            ],
+            temperature=0.7,
+            max_tokens=800
+        )
 
         return jsonify({
-            "response": response.text
+            "response": response.choices[0].message.content
         })
 
     except Exception as e:
